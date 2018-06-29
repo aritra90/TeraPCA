@@ -42,4 +42,9 @@ Note: If you want to change the number of threads for computation please change 
 
 **Usage**
 ```
-Usage: ./TeraPCA.exe -bfile /path/to/matrix/ [char*] -nsv (default is 10) [int] -nrhs (default 2*nsv) [int] -rfetched [int] or -memory(in GB, default is 2) [int] -power [int] -print [int] -filewrite [int] -toll [double] -blockPower_maxiter [int] -blockPower_conv_crit [int]```
+Usage: ./TeraPCA.exe -bfile /path/to/matrix/ [char*] -nsv (default is 10) [int] -nrhs (default 2*nsv) [int] -rfetched [int] or -memory(in GB, default is 2) [int] -power [int] -print [int] -filewrite [int] -toll [double] -blockPower_maxiter [int] -blockPower_conv_crit [int]
+
+```
+An example dataset is given in the ``` example ``` directory with 10 individuals and 50 SNPs randomly chosen from the HapMap dataset. A sample output is also provided for the user to validate results. 
+
+Any correspondence/questions about the codes are directed to the authors: ```kalan019@umn.edu``` and/or ```bose6@purdue.edu```
