@@ -1,0 +1,26 @@
+PLINK v1.90b3.42 64-bit (20 Sep 2016)
+Options in effect:
+  --bfile toy_hapmap1
+  --extract test_rsids.txt
+  --make-bed
+  --out ToyHapmap
+
+Hostname: snyder-fe01.rcac.purdue.edu
+Working directory: /home/bose6/flashpca-master/HapMap3
+Start time: Sun Nov  5 22:44:22 2017
+
+Random number seed: 1509939862
+64166 MB RAM detected; reserving 32083 MB for main workspace.
+Allocated 24062 MB successfully, after larger attempt(s) failed.
+14389 variants loaded from .bim file.
+10 people (5 males, 5 females) loaded from .fam.
+10 phenotype values loaded from .fam.
+--extract: 50 variants remaining.
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 10 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+50 variants and 10 people pass filters and QC.
+Among remaining phenotypes, 10 are cases and 0 are controls.
+--make-bed to ToyHapmap.bed + ToyHapmap.bim + ToyHapmap.fam ... done.
+
+End time: Sun Nov  5 22:44:22 2017

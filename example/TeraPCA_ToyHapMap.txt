@@ -1,0 +1,52 @@
+ToyHapmapToyHapmap
+[Fri Jun 29 12:11:36 2018] Reading .fam file: ToyHapmap.fam
+
+[Fri Jun 29 12:11:36 2018] Opened .bim file: ToyHapmap.bim
+Size of RAM (in KB): 97595084
+
+Number of rows per block: 50
+The value of NRHS given was larger than min(M,N). Adjusting to NRHS=min(M,N)...
+
+[Fri Jun 29 12:11:37 2018] Reading .bed file: ToyHapmap.bed
+
+1
+===================================================================
+TeraPCA library, Version: 1.0.
+Current local time and date: Fri Jun 29 12:11:37 2018
+===================================================================
+# of threads exploited: 1
+RAM size in KBs: 97595084
+RAM size in GBs: 97.595084
+# of matrix rows: 10
+# of matrix columns: 50
+# of singular pairs sought: 10
+# of right-hand sides used: 10
+Value of power: 1
+# of rows fetched from the disk per block: 50
+===================================================================
+The following times are listed in seconds!
+- - - - -
+Time to generate the right-hand sides matrix: 0.0000172341242
+Time to load the data matrix: 0.0000727036968
+Time to perform the MM products (overall): 0.0426325416192
+Time to perform the MM products (with A): 0.0425538681448
+Time to perform the MM products (with A^T): 0.0000408217311
+Time to perform the orthonormalization: 0.0003967769444
+Time to solve the projection eigenvalue problem: 0.0007776226848
+- - - - -
+Total wall-clock time elapsed: 0.0438968790695
+Total wall-clock time elapsed (without including the amount of time spent on loading the matrix): 0.0438241753727
+===================================================================
+The following times are listed in hours!
+- - - - -
+Time to generate the right-hand sides matrix: 0.0000000047873
+Time to load the data matrix: 0.0000000201955
+Time to perform the MM products (overall): 0.0000118423727
+Time to perform the MM products (with A): 0.0000118205189
+Time to perform the MM products (with A^T): 0.0000000113394
+Time to perform the orthonormalization: 0.0000001102158
+Time to solve the projection eigenvalue problem: 0.0000002160063
+- - - - -
+Total wall-clock time elapsed: 0.0000121935775
+Total wall-clock time elapsed (without including the time spent on loading the matrix): 0.0000121733820
+===================================================================
