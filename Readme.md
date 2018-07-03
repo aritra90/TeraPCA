@@ -26,6 +26,9 @@ TeraPCA can be run with the following parameters.
 
 *power*: For faster computations and avoid fetching the matrix from memory repeatedly. Default is 1.  
 
+*filewrite*: Boolean flag, when set to 1 will write two files with the singular values and the singular vectors, respectively.
+(Default is 0) 
+
 *print*: If print is set to 2, print details about convergence and matrix computations. Default is 1.  
 
 *prefix*: Output filename prefix, default is the Binary Ped File name.  
@@ -42,7 +45,7 @@ Note: If you want to change the number of threads for computation please change 
 
 **Usage**
 ```
-Usage: ./TeraPCA.exe -bfile /path/to/matrix/ [char*] -nsv (default is 10) [int] -nrhs (default 2*nsv) [int] -rfetched [int] or -memory(in GB, default is 2) [int] -power [int] -print [int] -filewrite [int] -toll [double] -blockPower_maxiter [int] -blockPower_conv_crit [int]
+Usage: ./TeraPCA.exe -bfile /path/to/matrix/ [char*] -nsv (default is 10) [int] -nrhs (default 2*nsv) [int] -rfetched [int] or -memory(in GB, default is 2) [int] -power [int] -print [int] -filewrite [int] -toll [double] -blockPower_maxiter [int] -blockPower_conv_crit [int] -prefix [string]
 
 ```
 An example dataset is given in the ``` example ``` directory with 10 individuals and 50 SNPs randomly chosen from the HapMap dataset. A sample output is also provided for the user to validate results. 
