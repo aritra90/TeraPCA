@@ -41,7 +41,7 @@ TeraPCA can be run with the following parameters.
 
 *trueSVD*: Compute true SVD using LAPACK of the matrix A(applies only when the dataset is fully loaded in RAM). 
 
-Note: If you want to change the number of threads for computation please change the environment variable setting OMP_NUM_THREADS=1 for a single thread or to anyother integer less than the maximum. The code will automatically detect this change and use multithreading accordingly. 
+Note: By default, TeraPCA links to the threaded layer of MKL. To use more than one threads in the MKL-related portions of TeraPCA simply set the environment variable ‘OMP_NUM_THREADS’ equal to the number of threads, i.e., type ‘export OMP_NUM_THREADS=x’ before execution, where ‘x’ denotes the number of threads used.
 
 **Usage**
 ```
