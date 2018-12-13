@@ -3,7 +3,7 @@ TeraPCA is a multithreaded C++ software suite based on Intel's MKL library (or a
 
 To install TeraPCA, one needs a working installation of Intel Math Kernel Library (MKL) (see https://software.intel.com/en-us/mkl), along with Intel’s “icpc“ C++ compiler (this can be downloaded as part of Intel Parallel Studio XE). No other external library/tool is necessary (the BLAS and LAPACK libraries are also used by TeraPCA and an implementation of these can be found in MKL).
 
-To install TeraPCA, one simply needs to edit the variable “MKL_ROOT“ in the Makefile equal to current MKL  installation directory. After this modification, move to the installation directory of TeraPCA and compile the package by doing: ```make```.
+Finally, one simply needs to edit the variable “MKL_ROOT“ in the Makefile equal to current MKL  installation directory. After this modification, move to the installation directory of TeraPCA and compile the package by doing: ```make```.
 
 Once compiled run the program as following: ```./TeraPCA.exe -bfile Binary-PED-file ```
 TeraPCA can be run with the following parameters.
