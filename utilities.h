@@ -19,8 +19,8 @@ void computeCosineError(double *MatA, double *MatB, int M, int NSV, double *Cosi
 void Read_Bed(std::ifstream &in, double *temp3, struct logistics *logg);
 
 
-void Read_Bed_Blocks(std::ifstream& in, unsigned long long x, unsigned int y, double *temp3, 
-					unsigned int start, struct logistics *logg, unsigned char *dec, 
+void Read_Bed_Blocks(std::ifstream& in, uint64_t x, uint64_t y, double *temp3, 
+					uint64_t start, struct logistics *logg, unsigned char *dec, 
 					unsigned char *read, double *tmp, bool *bb, double *nrm);
 
 void decode_plink(unsigned char * __restrict__ out, const unsigned char * __restrict__ in, const unsigned int n);

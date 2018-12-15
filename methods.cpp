@@ -203,59 +203,62 @@ void subspaceIteration(double *MAT, double *RHS2, logistics *logg) {
     }
   }
 
-  //========================================================== 
+  //==========================================================
   // write approx. singular values, left vectors to file
-  //========================================================== 
-   printf("\n%d\n", logg->filewrite); 
-    if (logg->filewrite == 1) {
-    	string tempname;
-    if (logg->prefixname.empty())
-      tempname = ConstructFilename(*logg,"singularValues");
-    else
-      tempname = logg->prefixname + "_singularValues.txt";
-    
-    FILE *fwrite_singvalues = fopen(tempname.c_str(), "w");
-    if (fwrite_singvalues==NULL) {
-      printf("Unable to write to file. Aborting...");
-      exit(1);
-    }  
-    
-    std::vector<double> singularvals = logg->sing_values;
-    std::transform(singularvals.begin(), singularvals.end(), singularvals.begin(), computeSquare);
-    std::vector<string> individs = logg->indiv_ids;
+  //==========================================================
+  if (logg->filewrite == 1) {
+       string tempname;
 
-    fprintf(fwrite_singvalues, "EIGENVALUES\n\n"); 
+       if (logg->prefixname.empty())
+          tempname = ConstructFilename(*logg,"singularValues");
+       else
+          tempname = logg->prefixname + "_singularValues.txt";
 
-    for(ii = 0; ii < logg->NSV; ii++ )
-      fprintf(fwrite_singvalues, "%2.13lf\n", singularvals[ii]);  
-    fclose(fwrite_singvalues);
+       FILE *fwrite_singvalues = fopen(tempname.c_str(), "w");
+       if (fwrite_singvalues==NULL) {
+         printf("Unable to write to file. Aborting...");
+         exit(1);
+       }  
 
-    if (logg->prefixname.empty())
-      tempname = ConstructFilename(*logg,"singularVectors");
-    else
-      tempname = logg->prefixname + "_singularVectors.txt";
-    FILE *fwrite_singvecs = fopen(tempname.c_str(), "w");
-    if (fwrite_singvecs==NULL) {
-      printf("Unable to write to file. Aborting...");
-      exit(1);
-    }
-	fprintf(fwrite_singvecs, "FID");
-	for(jj = 0; jj < logg->NSV; jj++)
-		fprintf(fwrite_singvecs, "   PC%d",jj);
-	fprintf(fwrite_singvecs,"\n");
-    for(ii = 0; ii < M; ii++ ){
-		fprintf(fwrite_singvecs, "%34s   ", individs[ii].c_str());	
-      for(jj = 0; jj < logg->NSV; jj++ ) 
-	fprintf(fwrite_singvecs, "% 2.13f   ", RHS2[ii*NRHS+jj]);
-      fprintf(fwrite_singvecs, "\n");
-    }
-    fclose(fwrite_singvecs);
+       std::vector<double> singularvals = logg->sing_values;
+       std::transform(singularvals.begin(), singularvals.end(), singularvals.begin(), computeSquare);// square singular values
+       std::vector<string> individs = logg->indiv_ids;
+
+       fprintf(fwrite_singvalues, "EIGENVALUES\n\n");
+       for(ii = 0; ii < logg->NSV; ii++ )
+         fprintf(fwrite_singvalues, "%2.13lf\n", singularvals[ii]);  
+       fclose(fwrite_singvalues);
+
+       if (logg->prefixname.empty())
+         tempname = ConstructFilename(*logg,"singularVectors");
+       else
+         tempname = logg->prefixname + "_singularVectors.txt";
+       FILE *fwrite_singvecs = fopen(tempname.c_str(), "w");
+       if (fwrite_singvecs==NULL) {
+         printf("Unable to write to file. Aborting...");
+         exit(1);
+       }
+       fprintf(fwrite_singvecs, "FID");
+       for(jj = 0; jj < logg->NSV; jj++)
+	  fprintf(fwrite_singvecs, "\tPC%d",jj);
+       fprintf(fwrite_singvecs,"\n");
+       for(ii = 0; ii < M; ii++ ){
+	  fprintf(fwrite_singvecs, "%8s", individs[ii].c_str());	
+          for(jj = 0; jj < logg->NSV; jj++ ) 
+	    fprintf(fwrite_singvecs, "\t%2.13f", RHS2[ii*NRHS+jj]);
+          fprintf(fwrite_singvecs, "\n");
+       }
+       fclose(fwrite_singvecs);
   }
   //==========================================================
 
   //==========================================================
   // Finalize program and deallocate resources                                                                             
-  //==========================================================                                                                   
+  //==========================================================
+  free(ARHS);
+  free(RHS); 
+  free(B2);
+  free(B);
   free(SING_VALUES);                                                                                                    
   free(SING_VALUES_OLD);                                                                                                    
   free(tau);
@@ -291,8 +294,8 @@ void BlockSubspaceIter(std::ifstream& infile, double *RHS2, logistics *logg) {
   double* B2            = (double*) malloc(NRHS*NRHS*sizeof(double));
   double* B2_duplicate  = (double*) malloc(NRHS*NRHS*sizeof(double));
   double tr1[NRHS],tr2[NRHS];
-  unsigned int np       = (unsigned long long)ceil((double)M/PACK_DENSITY);  //size of the packed data, in bytes, per SNP
-  unsigned int actual_block_size=0, startval; 
+  uint64_t np       = (unsigned long long)ceil((double)M/PACK_DENSITY);  //size of the packed data, in bytes, per SNP
+  uint64_t actual_block_size=0, startval; 
   double *LOC_MAT;
   unsigned char *decbin  = (unsigned char*)malloc(np*PACK_DENSITY*sizeof(unsigned char*));
   unsigned char *readbin = (unsigned char*)malloc(np*sizeof(unsigned char*));
@@ -313,7 +316,8 @@ void BlockSubspaceIter(std::ifstream& infile, double *RHS2, logistics *logg) {
     stop[ik] = stop[ik] >= N ? N - 1 : stop[ik];
   }
 
-  LOC_MAT = (double*)malloc(max(remaining_rows,rows_fetched)*M*sizeof(double));
+  uint64_t lmsize = max(remaining_rows,rows_fetched)*M;
+  LOC_MAT = (double*)malloc(lmsize*sizeof(double));
   //================================================================
   double *norm_precomp = (double*)malloc((4*N)*sizeof(double));
   memset(norm_precomp,0,(4*N)*sizeof(double));
@@ -666,13 +670,13 @@ void BlockSubspaceIter(std::ifstream& infile, double *RHS2, logistics *logg) {
       printf("Unable to write to file. Aborting...");
       exit(1);
     }
-    
+   
     std::vector<double> singularvals = logg->sing_values;
     std::transform(singularvals.begin(), singularvals.end(), singularvals.begin(), computeSquare); 
     std::vector<string> individ = logg->indiv_ids; 
     
     fprintf(fwrite_singvalues, "EIGENVALUES\n\n"); 
-    for(ii = 0; ii < logg->NSV; ii++ ){ 
+    for(ii = 0; ii < logg->NSV; ii++ ) { 
       fprintf(fwrite_singvalues, "%2.13lf\n", singularvals[ii]);  
     }
     fclose(fwrite_singvalues);
@@ -681,22 +685,22 @@ void BlockSubspaceIter(std::ifstream& infile, double *RHS2, logistics *logg) {
 	tempname = ConstructFilename(*logg,"singularVectors");
     else
 	tempname = logg->prefixname + "_singularVectors.txt";
-    FILE *fwrite_singvecs = fopen(tempname.c_str(), "a");
+    FILE *fwrite_singvecs = fopen(tempname.c_str(), "w");
     if (fwrite_singvecs==NULL) {
 	printf("Unable to write to file. Aborting...");
 	exit(1);
     }
 	fprintf(fwrite_singvecs, "FID");
         for(jj = 0; jj < logg->NSV; jj++)
-                fprintf(fwrite_singvecs, "   PC%d",jj);
+                fprintf(fwrite_singvecs, "\tPC%d",jj);
         fprintf(fwrite_singvecs,"\n");
 
     for (ii = 0; ii < M; ii++ ) {
-		fprintf(fwrite_singvecs, "%36s   ",individ[ii].c_str());
+      fprintf(fwrite_singvecs, "%8s",individ[ii].c_str());
       for (jj = 0; jj < logg->NSV; jj++ ) {
-	  fprintf(fwrite_singvecs, "% 2.13f   ", RHS2[ii*NRHS+jj]);
+	  fprintf(fwrite_singvecs, "\t%2.13f", RHS2[ii*NRHS+jj]);
       }
-	fprintf(fwrite_singvecs, "\n");
+      fprintf(fwrite_singvecs, "\n");
     }
     fclose(fwrite_singvecs);
   }   
@@ -722,4 +726,142 @@ void BlockSubspaceIter(std::ifstream& infile, double *RHS2, logistics *logg) {
   start.clear();
   stop.clear(); 
   //==========================================   
+}
+
+void benchmarking(std::ifstream& infile, double *RHS2, logistics *logg) {
+
+  //==========================================================                            
+  int    M = logg->M, N = logg->N, NRHS = logg->NRHS;
+  int    max_iter = logg->blockPower_maxiter, min_dim = min(N,NRHS), powers = logg->power;
+  double tt1, tt2;
+  int    ione = 1,   converged = 0, ii, jj, kk, ii2, jj2;
+  double fone = 1.0, minusfone = -1.0, fzero = 0.0;
+  double* ARHS            = (double*) malloc(M*NRHS*sizeof(double));
+  double* tau             = (double*) malloc(NRHS*sizeof(double));
+  int info_svd_lapacke, info_sgeqrf_lapacke, info_sorgqr_lapacke;
+  //================================================================                                          
+
+  //================================================================
+  int rows_fetched      = logg->rows_fetched;
+  int loops             = N / rows_fetched;
+  int remaining_rows    = N - rows_fetched*loops;
+  unsigned int ik;
+  int      colss        = logg->M;
+  double* RHS           = (double*) malloc(max(remaining_rows,rows_fetched)*NRHS*sizeof(double));
+  unsigned int np       = (unsigned long long)ceil((double)M/PACK_DENSITY);  //size of the packed data, in bytes, per SNP
+  unsigned int actual_block_size=0, startval; 
+  double *LOC_MAT;
+  unsigned char *decbin  = (unsigned char*)malloc(np*PACK_DENSITY*sizeof(unsigned char*));
+  unsigned char *readbin = (unsigned char*)malloc(np*sizeof(unsigned char*));
+  double *norm_tmp = (double*)malloc(M*sizeof(double)); 
+  //================================================================
+  if (remaining_rows > 0) {
+    loops = loops + 1;
+  } else {
+    remaining_rows = rows_fetched;
+  }
+
+  vector<int>start(loops);
+  vector<int>stop(loops); 
+
+  for(ik = 0 ; ik < loops ; ik++){
+    start[ik]= ik * rows_fetched;
+    stop[ik] = start[ik] + rows_fetched - 1;
+    stop[ik] = stop[ik] >= N ? N - 1 : stop[ik];
+  }
+
+  uint64_t lmsize = max(remaining_rows,rows_fetched)*M;
+  LOC_MAT = (double*)malloc(lmsize*sizeof(double));
+  //================================================================
+  double *norm_precomp = (double*)malloc((4*N)*sizeof(double));
+  memset(norm_precomp,0,(4*N)*sizeof(double));
+  bool *seen_snp = new bool[N]();
+  //================================================================
+
+    //====================================
+    // Multiply AA' by RHS2 from the right
+    //====================================
+    infile.seekg(3, std::ifstream::beg);
+    memset(ARHS, 0, M*NRHS*sizeof(double));
+    for (jj = 0; jj < loops; jj++) {
+      // prepare to fetch data from memory
+      // pack more bytes than required because it needs to read all of the byte
+      if(jj<loops-1){
+        actual_block_size = stop[jj] - start[jj] + 1;
+      }else{
+	actual_block_size = remaining_rows;
+      }
+      startval = start[jj];
+      infile.seekg(3 + np * startval);
+
+      if ( jj == 0 || jj < loops-1 ) {
+	// Load chunk of SNPs       
+        tt1 = dsecnd();
+	Read_Bed_Blocks(infile, np, actual_block_size, LOC_MAT, startval, logg, decbin, readbin, norm_tmp, seen_snp, norm_precomp);
+        tt2 = dsecnd() - tt1;
+        logg->TIME_2_LOAD_MATRIX = logg->TIME_2_LOAD_MATRIX + tt2;
+	
+        // Multiply with A'
+	tt1 = dsecnd();
+	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rows_fetched, NRHS, M, fone, LOC_MAT, M, RHS2, NRHS, fzero, RHS, NRHS);	
+	tt2 = dsecnd() - tt1;
+	logg->TIME_2_MM   = logg->TIME_2_MM + tt2;
+	logg->TIME_2_MM_A = logg->TIME_2_MM_A + tt2;
+	
+        // Multiply with A
+	tt1 = dsecnd();
+	cblas_dgemm(CblasRowMajor, CblasTrans, CblasNoTrans, M, NRHS, rows_fetched, fone, LOC_MAT, M, RHS, NRHS, fone, ARHS, NRHS);
+	tt2 = dsecnd() - tt1;
+	logg->TIME_2_MM = logg->TIME_2_MM + tt2;
+	logg->TIME_2_MM_A_TRANSPOSED = logg->TIME_2_MM_A_TRANSPOSED + tt2;} 
+      else{
+        // Load chunk of SNPs
+      	tt1 = dsecnd();
+      	Read_Bed_Blocks(infile, np, actual_block_size, LOC_MAT, startval, logg, decbin, readbin, norm_tmp, seen_snp, norm_precomp);
+        tt2 = dsecnd() - tt1;
+      	logg->TIME_2_LOAD_MATRIX = logg->TIME_2_LOAD_MATRIX + tt2;
+      	
+        // Multiply with A'
+      	tt1 = dsecnd();
+      	cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, remaining_rows, NRHS, M, fone, LOC_MAT, M, RHS2, NRHS, fzero, RHS, NRHS);
+      	tt2 = dsecnd() - tt1;
+      	logg->TIME_2_MM = logg->TIME_2_MM + tt2;
+      	logg->TIME_2_MM_A = logg->TIME_2_MM_A + tt2;
+      	
+        // Multiply with A
+      	tt1 = dsecnd();
+      	cblas_dgemm(CblasRowMajor, CblasTrans, CblasNoTrans, M, NRHS, remaining_rows, fone, LOC_MAT, M, RHS, NRHS, fone, ARHS, NRHS);
+      	tt2 = dsecnd() - tt1;
+      	logg->TIME_2_MM = logg->TIME_2_MM + tt2;
+      	logg->TIME_2_MM_A_TRANSPOSED = logg->TIME_2_MM_A_TRANSPOSED + tt2;
+      }
+    }
+
+    //==========================
+    // Perform orthogonalization
+    //==========================
+    tt1 = dsecnd();
+    info_sgeqrf_lapacke = LAPACKE_dgeqrf( LAPACK_ROW_MAJOR, M, NRHS, ARHS, NRHS, tau );
+    info_sorgqr_lapacke = LAPACKE_dorgqr( LAPACK_ROW_MAJOR, M, NRHS, NRHS, ARHS, NRHS, tau );
+    tt2 = dsecnd() - tt1;
+    logg->TIME_2_GS = logg->TIME_2_GS + tt2;
+    //==========================
+
+    cout<< "Benchmarking mode" << endl;
+    cout<< "-----------------" << endl;
+    cout<< "Number of threads used: " << logg->threads << endl;
+    cout<< "Number of RHS: " << NRHS << endl;
+    cout<< "Number of rows fetched: " << rows_fetched << endl;
+    cout<< "Time to load A': " << logg->TIME_2_LOAD_MATRIX <<endl;
+    cout<< "Time to perform MM: " << logg->TIME_2_MM <<endl;
+    cout<< "Time to perform ORTH: " << logg->TIME_2_GS <<endl;
+
+    //===========
+    // Deallocate
+    //===========
+    free(LOC_MAT);
+    free(ARHS);
+    free(RHS);
+    //===========
+
 }

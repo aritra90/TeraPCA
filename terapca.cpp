@@ -82,9 +82,10 @@ int main(int argc, char **argv){
      printf("prefix: prefix for the name of the files\n");
      printf("toll: stopping tolerance for blockPower SVD\n");
      printf("blockPower_maxiter: max # of iterations in blockPower SVD \n");
-     printf("blockPower_conv_crit: 0-> trace, 1-> individual \n\n");
-     printf("power: applies Subspace Iteration to (AA')^power \n\n");
-     printf("trueSVD: compute true SVD of A or not (applies only when the dataset is fully loaded in RAM) \n\n");
+     printf("blockPower_conv_crit: 0-> trace, 1-> individual \n");
+     printf("power: applies Subspace Iteration to (AA')^power \n");
+     printf("trueSVD: compute true SVD of A or not (applies only when the dataset is fully loaded in RAM) \n");
+     printf("benchmarking: if enabled TeraPCA only tests the linear algebra routines \n\n");
      return 0;
    }
    flg = findarg("about", NA, NULL, argc, argv);
@@ -105,6 +106,7 @@ int main(int argc, char **argv){
    findarg("blockPower_conv_crit", INT, &logg.blockPower_conv_crit, argc, argv);
    findarg("power", INT, &logg.power, argc, argv);
    findarg("trueSVD", INT, &logg.trueSVD, argc, argv);
+   findarg("benchmarking", INT, &logg.benchmarking, argc, argv);
    //============================================================================
 
    std::string bfile(fname);
@@ -137,7 +139,7 @@ int main(int argc, char **argv){
    string strf(".fam");
    string strbim(".bim");
    //===========================================================
-
+   
    //===========================================================
    // Read Fam file
    //===========================================================
@@ -205,6 +207,10 @@ int main(int argc, char **argv){
    ram_GB = ram_GB / 1000000;
    logg.ram_KB = ram_KB;
    logg.ram_GB = ram_GB;
+   // If no memory amount has been set
+   if (logg.mem == 0.0) {
+     logg.mem = logg.ram_GB/10;
+   }
    //===========================================================
 
    //===========================================================
@@ -216,7 +222,8 @@ int main(int argc, char **argv){
    //===========================================================
 
    //===========================================================
-   // Compute the rows to be fetched, dependent on the user defined RAM memory used
+   // Compute the number of rows fetched (if rfetched was not given)
+   // rfetched supersedes logg.mem
    //===========================================================
    double blksize;
    if (logg.rows_fetched <= 0){
@@ -231,7 +238,7 @@ int main(int argc, char **argv){
 
    	logg.rows_fetched = (int)blksize;
   	if (logg.rows_fetched <= 0)
-		logg.rows_fetched = logg.NSV;
+           logg.rows_fetched = logg.NSV;
    }
    // check if there is enough space to store the entire matrix
    if (logg.rows_fetched >= logg.N) {
@@ -326,6 +333,16 @@ int main(int argc, char **argv){
    //===========================================================
    // Compute leading left singular vectors
    //===========================================================
+   if (logg.benchmarking == 1) {
+     if (logg.rows_fetched == logg.N) {
+
+     } else {
+       benchmarking(bedin, RHS, &logg);
+     }
+     free(RHS);
+     bedin.close();
+     return 0;
+   }
    if (logg.rows_fetched == logg.N) {
      subspaceIteration(MAT, RHS, &logg);
    } else {
@@ -411,7 +428,7 @@ int main(int argc, char **argv){
      // Write True Left Singular Vectors and Singular Values into file
      //===========================================================
      if (logg.filewrite == 1) {
-       string tempname1,tempname2;
+       string tempname1,tempname2,tempname3;
        if (logg.prefixname.empty()){
 	 tempname1 = ConstructFilename(logg,"realLeftSingularVectors");
 	 tempname2 = ConstructFilename(logg,"realSingularValues");

@@ -1,4 +1,4 @@
-// http://www.csee.usf.edu/~kchriste/tools/gennorm.c
+//This file can be found in http://www.csee.usf.edu/~kchriste/tools/gennorm.c
 
 #include "gennorm.h"
 

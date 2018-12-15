@@ -54,7 +54,7 @@ struct logistics
   int    threads, max_threads;
   int    ram_KB;
   double ram_GB;
-
+  int benchmarking;
 
   // for blockPower
   int    blockPower_total_its;

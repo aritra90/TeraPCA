@@ -17,3 +17,5 @@
 void subspaceIteration(double *MAT, double *RHS2, struct logistics *logg);
 
 void BlockSubspaceIter(std::ifstream& in, double *RHS2, logistics *logg);
+
+void benchmarking(std::ifstream& in, double *RHS2, logistics *logg);
