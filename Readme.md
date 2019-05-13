@@ -51,4 +51,5 @@ Usage: ./TeraPCA.exe -bfile /path/to/matrix/ [char*] -nsv (default is 10) [int] 
 An example dataset is given in the ``` example ``` directory with 10 individuals and 50 SNPs randomly chosen from the HapMap dataset. A sample output is also provided for the user to validate results. 
 
 Contributors: Vassilis Kalantzis, Aritra Bose, Eugenia Kontopoulou
+
 Any correspondence/questions about the codes are directed to: ```kalan019@umn.edu``` and/or ```bose6@purdue.edu```
