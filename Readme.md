@@ -52,4 +52,4 @@ An example dataset is given in the ``` example ``` directory with 10 individuals
 
 Contributors: Vassilis Kalantzis, Aritra Bose, Eugenia Kontopoulou
 
-Any correspondence/questions about the codes are directed to: ```kalan019@umn.edu``` and/or ```bose6@purdue.edu```
+Any correspondence/questions about the codes are directed to: ```kalan019@umn.edu``` and/or ```a.bose@ibm.com```
