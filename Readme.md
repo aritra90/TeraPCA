@@ -5,6 +5,8 @@ To install TeraPCA, one needs a working installation of Intel Math Kernel Librar
 
 Finally, one simply needs to edit the variable “MKL_ROOT“ in the Makefile equal to current MKL  installation directory. After this modification, move to the installation directory of TeraPCA and compile the package by doing: ```make```.
 
+If MKL is preinstalled in your system check the path such as ```/opt/intel/oneapi``` and find the shell script called ```setvars.sh```. You need to set the environment variables with ```source setvars.sh``` and then make and install TeraPCA.
+
 Once compiled run the program as following: ```./TeraPCA.exe -bfile Binary-PED-file ```
 TeraPCA can be run with the following parameters.
 
